@@ -33,7 +33,4 @@ php artisan migrate
 php artisan key:generate
 ```
 
-## Cài Đặt Các Thư Viện Cần Thiết
-```bash
-composer install
-```
+
