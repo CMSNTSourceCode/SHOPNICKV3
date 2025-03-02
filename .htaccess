@@ -1,0 +1,116 @@
+# Bật chức năng rewrite của Apache
+
+RewriteEngine On
+
+# Chuyển hướng tất cả các yêu cầu đến thư mục public
+
+<IfModule mod_rewrite.c>
+# That was ONLY to protect you from 500 errors
+# if your server did not have mod_rewrite enabled
+
+RewriteEngine On
+# RewriteBase /
+# NOT needed unless you're using mod_alias to redirect
+
+RewriteCond %{REQUEST_URI} !/public
+RewriteRule ^(.*)$ public/$1 [L]
+# Direct all requests to /public folder
+
+</IfModule>
+
+# Chặn truy cập tới các tệp tin .env
+
+<Files .env>
+Order Allow,Deny
+Deny from all
+</Files>
+
+# Chặn truy cập tới các tệp tin .git
+
+<DirectoryMatch "\.git">
+Require all denied
+</DirectoryMatch>
+
+# Chặn truy cập tới các thư mục storage và bootstrap/cache
+
+<DirectoryMatch "^(storage|bootstrap/cache)">
+Require all denied
+</DirectoryMatch>
+
+
+# Đặt chế độ cache cho các tệp tin tĩnh (như hình ảnh, CSS, JavaScript)
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpg "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType text/html "access plus 1 month"
+</IfModule>
+
+# Không cho phép người dùng tải lại các tệp tin tĩnh (như hình ảnh, CSS, JavaScript)
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(ico|jpg|jpeg|png|gif|js|css)$">
+    Header set Cache-Control "max-age=2592000, public"
+  </FilesMatch>
+</IfModule>
+
+# Cấm truy cập trực tiếp đến các tệp tin PHP
+
+<Files \*.php>
+Order allow,deny
+Deny from all
+</Files>
+
+# Đặt chế độ gzip cho các tệp tin tĩnh (như hình ảnh, CSS, JavaScript)
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/xml
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/x-httpd-php
+  AddOutputFilterByType DEFLATE application/x-httpd-fastphp
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# Thiết lập header security
+
+<IfModule mod_headers.c>
+  # X-Content-Type-Options: nosniff
+  Header set X-Content-Type-Options: nosniff
+
+# X-Frame-Options: SAMEORIGIN
+
+Header set X-Frame-Options: SAMEORIGIN
+
+# X-XSS-Protection: 1; mode=block
+
+Header set X-XSS-Protection: 1; mode=block
+
+# Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+Header set Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+# Content-Security-Policy: default-src 'self';
+
+# Header set Content-Security-Policy: default-src 'self';
+</IfModule>
+
+# Thiết lập charset utf-8 cho tất cả các tệp tin
+
+AddDefaultCharset utf-8
+
+# Cho phép sử dụng htaccess trong thư mục con
+
+Options All -Indexes +FollowSymLinks
