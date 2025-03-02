@@ -24,12 +24,11 @@ class Update
 
   public function __construct()
   {
-    self::$api_url    = 'https://updates.baocms.net/shopnickv3/index.php';
-    self::$hash_key   = 'e01cc7e1e3957ff1cec61d5de0b8c964';
+    self::$api_url    = 'https://github.com/CMSNTSourceCode/SHOPNICKV3';
+    self::$hash_key   = 'https://github.com/CMSNTSourceCode/SHOPNICKV3';
     self::$base_path  = base_path('devonly');
-    self::$client_key = env('CLIENT_SECRET_KEY', 'e01cc7e1e3957ff1cec61d5de0b8c964');
+    self::$client_key = env('CLIENT_SECRET_KEY', 'meomatcang');
   }
-
   public static function enableUpdate()
   {
     return env('SERVER_ALLOW_UPDATE', false);
@@ -37,7 +36,7 @@ class Update
 
   public static function currentVersion()
   {
-    $version = Helper::getConfig('version_code', 1000);
+    $version = Helper::getConfig('version_code', 6127);
 
     return $version;
   }
